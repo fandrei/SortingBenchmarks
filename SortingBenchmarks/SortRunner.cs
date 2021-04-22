@@ -12,6 +12,7 @@ namespace SortingBenchmarks
 	public static class SortRunner
 	{
 		const int RepeatCount = 8;
+		const int StartSize = 0x800;
 		const int MaxItemsCount = 0x100_000;
 
 		public static void Test()
@@ -22,7 +23,7 @@ namespace SortingBenchmarks
 
 				var comparer = new IntComparer();
 				Random random = new(1);
-				for (var itemsCount = 0x800; itemsCount <= MaxItemsCount; itemsCount *= 2)
+				for (var itemsCount = StartSize; itemsCount <= MaxItemsCount; itemsCount *= 2)
 				{
 					var source = new int[itemsCount];
 					for (var i = 0; i < itemsCount; i++)
@@ -39,12 +40,29 @@ namespace SortingBenchmarks
 				Console.WriteLine("String");
 
 				var comparer = StringComparer.Ordinal;
-				for (var itemsCount = 0x800; itemsCount <= MaxItemsCount; itemsCount *= 2)
+				for (var itemsCount = StartSize; itemsCount <= MaxItemsCount; itemsCount *= 2)
 				{
 					var source = new string[itemsCount];
 					for (var i = 0; i < itemsCount; i++)
 					{
 						source[i] = GenerateString();
+					}
+
+					Test(source, comparer);
+				}
+			}
+
+			{
+				Console.WriteLine(new string('-', 40));
+				Console.WriteLine("TestStruct");
+
+				var comparer = new TestStructComparer();
+				for (var itemsCount = StartSize; itemsCount <= MaxItemsCount; itemsCount *= 2)
+				{
+					var source = new TestStruct[itemsCount];
+					for (var i = 0; i < itemsCount; i++)
+					{
+						source[i] = new TestStruct(GenerateString());
 					}
 
 					Test(source, comparer);
